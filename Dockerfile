@@ -10,6 +10,9 @@ COPY . /app
 # Install any dependencies
 RUN pip install -r requirements.txt
 
+# Install testing dependencies
+RUN pip install pytest
+
 # Make port 5000 available to the world outside this container
 EXPOSE 5000
 
