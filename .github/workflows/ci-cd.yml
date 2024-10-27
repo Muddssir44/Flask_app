@@ -29,5 +29,6 @@ jobs:
       - name: Build Docker image
         run: docker build -t flask_app .
 
-      - name: Deploy to AWS (assuming you have a deployment script)
-        run: ./deploy.sh
+      - name: Deploy to AWS EC2
+        run: |
+          ssh -o StrictHostKeyChecking=no -i ${{ secrets.EC2_SSH_KEY }} ec2-user@<13.232.118.214> 'cd /path/to/your/app && git pull && docker-compose up -d'
