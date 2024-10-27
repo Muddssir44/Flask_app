@@ -1,3 +1,4 @@
+<<<<<<< HEAD
 # Simple Web Application
 
 This is a simple web application using [Python Flask](http://flask.pocoo.org/) and [MySQL](https://www.mysql.com/) database. 
@@ -41,3 +42,6 @@ Open a browser and go to URL
 http://<IP>:5000                            => Welcome
 http://<IP>:5000/how%20are%20you            => I am good, how about you?
 ```
+=======
+# Flask_app
+>>>>>>> 4d93b69b31bf6e4f28d5d2f6a7073a2acc658269
