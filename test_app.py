@@ -7,7 +7,7 @@ class BasicTests(unittest.TestCase):
 
     def test_welcome_message(self):
         response = self.app.get('/')
-        expected_message = "Welcome to my Flask app! Enjoy exploring."
+        expected_message = "Welcome to my Flask application! Enjoy exploring."
         self.assertEqual(response.data.decode(), expected_message)
 
 if __name__ == '__main__':
