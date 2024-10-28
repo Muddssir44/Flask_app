@@ -1,34 +1,42 @@
-name: CI/CD Pipeline
+name: Deploy to EC2
 
 on:
   push:
     branches:
-      - main
+      - main  # Monitor the main branch
 
 jobs:
   build:
     runs-on: ubuntu-latest
 
     steps:
-      - name: Checkout code
-        uses: actions/checkout@v2
+    - name: Checkout code
+      uses: actions/checkout@v2
 
-      - name: Set up Python
-        uses: actions/setup-python@v2
-        with:
-          python-version: '3.9'
+    - name: Set up Python
+      uses: actions/setup-python@v2
+      with:
+        python-version: '3.x'  # Specify the Python version
 
-      - name: Install dependencies
-        run: |
-          python -m pip install --upgrade pip
-          pip install -r requirements.txt
+    - name: Install dependencies
+      run: |
+        python -m pip install --upgrade pip
+        pip install -r requirements.txt
 
-      - name: Run tests
-        run: python -m unittest discover
+    - name: Run tests
+      run: |
+        python -m unittest discover -s .
 
-      - name: Build Docker image
-        run: docker build -t flask_app .
-
-      - name: Deploy to AWS EC2
-        run: |
-          ssh -o StrictHostKeyChecking=no -i ${{ secrets.EC2_SSH_KEY }} ec2-user@35.154.243.86 'cd simple-webapp-flask-master && git pull && docker-compose up -d'
+    - name: Deploy to EC2
+      env:
+        EC2_HOST: "35.154.243.86"  # Your public IP
+        EC2_USER: ${{ secrets.EC2_USER }}
+        EC2_KEY: ${{ secrets.EC2_KEY }}
+      run: |
+        scp -o StrictHostKeyChecking=no -i "$EC2_KEY" -r * $EC2_USER@$EC2_HOST:~/simple-webapp-flask-master
+        ssh -o StrictHostKeyChecking=no -i "$EC2_KEY" $EC2_USER@$EC2_HOST << 'EOF'
+          cd ~/simple-webapp-flask-master
+          pip3 install -r requirements.txt
+          pkill -f "python3 app.py" || true  # Stop any existing app instances
+          nohup python3 app.py &  # Run app in background
+        EOF
